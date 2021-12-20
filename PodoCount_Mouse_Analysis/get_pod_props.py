@@ -24,7 +24,7 @@ def thin_section_method(podocyte_count,pod_mask,areas,bbs,glom_area,T,area_mpp2,
 
     k = 0.72
     D = (d-T+np.sqrt((d-T)**2+(4*k*d*T)))/(2*k)
-    CF = 1/(D/(T+1))
+    CF = 1/(D/T+1)
     thin_pod_count = podocyte_count*CF
     glom_vol = glom_area*T
     thin_pod_density = thin_pod_count/glom_vol
