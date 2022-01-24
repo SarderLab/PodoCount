@@ -1,4 +1,4 @@
-# PodoCount: A tool for whole-slide podocyte quantification
+# PodoCount: A tool for whole-slide podocyte quantification (v1)
 
 **Version 1.0.0**
 
