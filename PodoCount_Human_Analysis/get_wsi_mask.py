@@ -14,7 +14,7 @@ def get_wsi_mask(image,wsi_glom_mask):
     wsi_mask = color.rgb2gray(image)
     wsi_mask = wsi_mask<(wsi_mask.mean())
     wsi_mask = sp.ndimage.morphology.binary_fill_holes(wsi_mask)
-    wsi_mask = (resize(wsi_mask,wsi_glom_mask.shape,anti_aliasing=True)>0.01)*1
+    wsi_mask = (resize(wsi_mask,wsi_glom_mask.shape,anti_aliasing=False)>0.01)*1 #true to false.
     wsi_mask = np.logical_and(wsi_mask,(1-wsi_glom_mask))
     wsi_labels, num_labels = sp.ndimage.label(wsi_mask)
     wsi_props = sk.measure.regionprops(wsi_labels)

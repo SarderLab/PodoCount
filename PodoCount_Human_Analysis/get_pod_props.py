@@ -89,7 +89,7 @@ def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, 
         elif nuc_ecc < max_ecc:
             nuc_temp[nuclei_label==label] = 1
 
-    nuclei_dt = sp.ndimage.morphology.distance_transform_edt(np.invert(nuc_temp.astype(np.int)))
+    nuclei_dt = sp.ndimage.morphology.distance_transform_edt(np.invert(nuc_temp.astype(np.uint8)))
     nuclei_dt = sk.filters.gaussian(nuclei_dt,dt_gauss_sd)
     nuclei_dt_max = sk.morphology.h_minima(nuclei_dt,emt_thresh*nuclei_dt.max())
 
@@ -127,7 +127,7 @@ def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, 
     glom_area = np.sum(glom_mask)*area_mpp2
     ###human add
     se = sk.morphology.disk(3)
-    glom_mask = sk.morphology.binary_erosion(glom_mask,selem=se,out=None)
+    glom_mask = sk.morphology.binary_erosion(glom_mask,footprint=se,out=None)
     separated_podocytes = np.logical_and(glom_mask,separated_podocytes)
     ###human add end
     gcount = gcount+1

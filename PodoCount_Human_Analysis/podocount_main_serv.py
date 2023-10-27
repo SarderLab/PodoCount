@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import cv2
-import openslide
+#import openslide
 import glob
 import time
 import warnings
@@ -24,30 +24,33 @@ from stain_decon import stain_decon
 from get_pod_props import get_pod_props
 from skimage import color, morphology
 from skimage.transform import resize
-
+from tiffslide import TiffSlide
 #filter warnings
 warnings.filterwarnings("ignore")
 
 #parsing input arguments
 parser = argparse.ArgumentParser(description='Parameters for operating PodoCount.')
-parser.add_argument('-A','--ftype', metavar='', required = True, type=str, nargs='+',
-                    help='the WSI file format; options include .svs and .ndpi')
-parser.add_argument('-B','--num_sections', metavar='', required = True, type=int, nargs='+',
-                    help='an integer indicating the number of tissue sections per WSI; options include {1,2}')
-parser.add_argument('-C','--slider', metavar='', required = True, type=float, nargs='+',
-                    help='a number (float) establishing the threshold on the dab stain; options include any number [0,3]')
-parser.add_argument('-D','--section_thickness', metavar='', required = True, type=int, nargs='+',
-                    help='a number (integer) indicating the tissue section thickness [0,15]')
-parser.add_argument('-E','--cohort', metavar='', required = True, type=str, nargs='+',
-                                        help='please indicate the name of the dataset')
+parser.add_argument('-A','--ftype', metavar='', type=str, nargs='+',
+                    help='the WSI file format; options include .svs and .ndpi', default= '.svs')
+parser.add_argument('-B','--num_sections', metavar='', type=int, nargs='+',
+                    help='an integer indicating the number of tissue sections per WSI; options include {1,2}', default= 1)
+parser.add_argument('-C','--slider', metavar='', type=float, nargs='+',
+                    help='a number (float) establishing the threshold on the dab stain; options include any number [0,3]', default= 1.0)
+parser.add_argument('-D','--section_thickness', metavar='', type=int, nargs='+',
+                    help='a number (integer) indicating the tissue section thickness [0,15]', default= 7)
+parser.add_argument('-E','--cohort', metavar='', type=str, nargs='+',
+                                        help='please indicate the name of the dataset', default= 'test')
 args = parser.parse_args()
+
+
+
 
 #get current working directory
 cwd = os.getcwd()
 
 #WSI general info
-ftype = args.ftype[0]
-section_thickness = args.section_thickness[0]
+ftype = args.ftype
+section_thickness = args.section_thickness
 cohort_id = args.cohort[0]
 WSIs = str(cwd + '/WSIs/*' + ftype)
 glom_xmls = str(cwd + '/glom_xmls/*.xml')
@@ -74,8 +77,8 @@ if not os.path.isdir(output_dir):
     os.makedirs(pod_seg_dir)
 
 #Parameters
-slider = args.slider[0]
-num_sections = args.num_sections[0]
+slider = args.slider
+num_sections = args.num_sections
 
 #Main Script
 for WSI in range(len(WSI_dir)):
@@ -88,14 +91,33 @@ for WSI in range(len(WSI_dir)):
     WSI_name = WSI_name[0]
     print('\n')
     print('--- Working on: '+str(WSI_name)+' ---\n')
-    WSI_file = openslide.open_slide(WSI_file)
-    WSI_meta = (float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_X])+float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_Y]))/2
+
+    #WSI_file = openslide.open_slide(WSI_file)
+    WSI_file = TiffSlide(WSI_file)
+    #print(WSI_file.properties)
+    #print(openslide.PROPERTY_NAME_MPP_X)
+
+    '''
+    try :
+        mpp_x = float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_X])
+        mpp_y = float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_Y])
+    except KeyError:
+        mpp_x = 0.25
+        mpp_y = 0.25
+
+    '''
+    mpp_x = 0.25
+    mpp_y = 0.25
+    WSI_meta = (mpp_x + mpp_y) / 2
+
+    #WSI_meta = (float(WSI_file.properties[TiffSlide.PROPERTY_NAME_MPP_X])+float(WSI_file.properties[TiffSlide.PROPERTY_NAME_MPP_Y]))/2
+
     dist_mpp, area_mpp2 = WSI_meta, WSI_meta**2
     WSI_cols,WSI_rows = WSI_file.dimensions[0],WSI_file.dimensions[1]
     if ftype == '.ndpi':
         level = 2
     else:
-        level = 1
+        level = 0 #changed form 1 to 0.
     WSI_levels = WSI_file.level_dimensions[level]
     downsample_factor=16
     df2 = np.sqrt(downsample_factor)

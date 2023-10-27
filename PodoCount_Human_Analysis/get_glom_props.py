@@ -5,6 +5,7 @@ Created on Mon Nov 23 9:00:07 2020
 """
 import numpy as np
 import skimage as sk
+from skimage.morphology import binary_dilation, disk
 import scipy as sp
 import cv2
 
@@ -80,7 +81,7 @@ def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
     elif num_sections == 1:
 
         se = sk.morphology.disk(3)
-        pod_im = sk.morphology.binary_dilation(glom_image,selem=se,out=None)
+        pod_im = sk.morphology.binary_dilation(glom_image,footprint=se) #removed out=none
 
         glom_label, glom_count = sp.ndimage.label(glom_image)
         total_gloms = glom_count
