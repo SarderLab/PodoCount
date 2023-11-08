@@ -5,22 +5,10 @@ import os
 import sys
 
 from setuptools import find_packages
-
-# try:
-#     from skbuild import setup
-# except ImportError:
-#     sys.stderr.write("""scikit-build is required to build from source or run tox.
-# Please run:
-#   python -m pip install scikit-build
-# """)
-#     # from setuptools import setup
-#     sys.exit(1)
 from setuptools import setup
-
 
 with open('README.rst', 'rt') as readme_file:
     readme = readme_file.read()
-
 
 def prerelease_local_scheme(version):
     """
@@ -60,13 +48,7 @@ setup(
         'scipy>=0.19.0',
         'Pillow==9.5.0',
         'pandas==1.1.5',
-        #'imageio>=2.3.0',
-        #'shapely[vectorized]',
-        #'pyvips',
-        #'termcolor',
-        #'seaborn',
         'opencv-python',
-        #'openslide-python',
         'scikit-image==0.19.2',
         'scikit-learn==1.0.2',
         'lxml==4.2.2',
@@ -74,7 +56,6 @@ setup(
         'tifffile==2021.11.2',
         'tiffslide==1.5.0',
         'tqdm==4.64.0',
-        #'umap-learn==0.5.3',
         'openpyxl',
         'xlrd<2',
         # dask packages
