@@ -45,9 +45,9 @@ setup(
     description='A Python toolkit for Histopathology Image Analysis',
     long_description=readme,
     long_description_content_type='text/x-rst',
-    author='Kitware, Inc.',
-    author_email='developers@digitalslidearchive.net',
-    url='https://github.com/DigitalSlideArchive/HistomicsTK',
+    author='Sumanth Devarasetty',
+    author_email='sumanthdevarasetty@gmail.com',
+    url='https://github.com/SarderLab/PodoCount',
     packages=find_packages(exclude=['tests', '*_test']),
     package_dir={
         'podo': 'podo',
@@ -91,7 +91,7 @@ setup(
         'girder-client',
         # cli
         'ctk-cli',
-        'Shapely==1.8.5.post1',
+        #'Shapely==1.8.5.post1',
         #'wsi-annotations-kit==1.2.11',
         #'rpy2'
     ],

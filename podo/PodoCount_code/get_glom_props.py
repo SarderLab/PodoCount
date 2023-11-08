@@ -5,7 +5,7 @@ Created on Mon Nov 23 9:00:07 2020
 """
 import numpy as np
 import skimage as sk
-from skimage.morphology import binary_dilation, disk
+
 import scipy as sp
 import cv2
 

@@ -22,32 +22,16 @@ def thin_section_method(podocyte_count,pod_mask,areas,bbs,glom_area,T,area_mpp2,
     x_lengths = dist_mpp*(x_stop-x_start)
     y_lengths = dist_mpp*(y_stop-y_start)
     d = np.mean(np.mean(np.hstack([x_lengths,y_lengths]),axis=0))
-'''
-    print(type(d), 'd')
-    print(type(T), 'T')
-
-
-    # Convert string inputs to floats if they are indeed strings
-    d = float(d) if isinstance(d, str) else d
-    T = float(T) if isinstance(T, str) else T
-    #k = float(k) if isinstance(k, str) else k
-
-    # Now perform the operation
-    #D = (d - T + np.sqrt((d - T)**2 + (4 * k * d * T))) / (2 * k)
-'''
-
     k = 0.72
     D = (d-T+np.sqrt((d-T)**2+(4*k*d*T)))/(2*k)
     CF = 1/(D/T+1)
     thin_pod_count = podocyte_count*CF
     glom_vol = glom_area*T
     thin_pod_density = thin_pod_count/glom_vol
-
     #swapped in zeros
     thin_pod_tpa = 0
     thin_pod_gpc = 0
     thin_pod_mask = np.zeros(pod_mask.shape)
-
     return thin_pod_count, thin_pod_density, thin_pod_tpa, thin_pod_gpc, thin_pod_mask
 
 def get_stats(array):
@@ -169,7 +153,6 @@ def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, 
     #save mask
     roi_name = '/podmask_' + str(gcount) + '.png'
     roi_path = wsi_pod_seg_dir + roi_name
-    plt.imsave(roi_path,separated_podocytes)
 
     if podocyte_count>0:
 

@@ -36,19 +36,6 @@ import girder_client
 #filter warnings
 warnings.filterwarnings("ignore")
 
-#parsing input arguments
-#parser = argparse.ArgumentParser(description='Parameters for operating PodoCount.')
-#parser.add_argument('-A','--ftype', metavar='', type=str, nargs='+', help='the WSI file format; options include .svs and .ndpi', default= '.svs')
-#parser.add_argument('-B','--num_sections', metavar='', type=int, nargs='+', help='an integer indicating the number of tissue sections per WSI; options include {1,2}', default= 1)
-#parser.add_argument('-C','--slider', metavar='', type=float, nargs='+',help='a number (float) establishing the threshold on the dab stain; options include any number [0,3]', default= 1.0)
-#parser.add_argument('-D','--section_thickness', metavar='', type=int, nargs='+', help='a number (integer) indicating the tissue section thickness [0,15]', default= 7)
-#parser.add_argument('-E','--cohort', metavar='', type=str, nargs='+', help='please indicate the name of the dataset', default= 'test')
-#args = parser.parse_args()
-
-
-
-
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--input_image')
@@ -69,21 +56,13 @@ gc.setToken(args.girderToken)
 
 #get current working directory
 cwd = os.getcwd()
-
 WSIs = [args.input_image]
 
 
 
 #WSI general info
-#ftype = args.ftype
-section_thickness = args.section_thickness
-#cohort_id = args.cohort[0]
-#WSIs = str(cwd + '/WSIs/*' + ftype)
-#glom_xmls = str(cwd + '/glom_xmls/*.xml')
+section_thickness = int(args.section_thickness)
 glom_xmls = [args.glom_xml]
-
-#WSI_dir = glob.glob(WSIs)
-#glom_xmls_dir = glob.glob(glom_xmls)
 
 #Creating output directories
 output_dir = args.basedir + '/tmp'
@@ -111,7 +90,6 @@ num_sections = 1
 for WSI in WSIs:
     start_time = time.time()
 
-    #WSI_file = WSI_dir[WSI]
     WSI_name = WSI.split('/')
     WSI_name = WSI[-1]
     WSI_name = WSI.split('.')
@@ -119,35 +97,18 @@ for WSI in WSIs:
     print('\n')
     print('--- Working on: '+str(WSI_name)+' ---\n')
 
-    #WSI_file = openslide.open_slide(WSI_file)
     WSI_file = TiffSlide(WSI)
     levels = WSI_file.level_dimensions
     print(levels, "levels")
-    #print(WSI_file.properties)
-    #print(openslide.PROPERTY_NAME_MPP_X)
 
-    '''
-    try :
-        mpp_x = float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_X])
-        mpp_y = float(WSI_file.properties[openslide.PROPERTY_NAME_MPP_Y])
-    except KeyError:
-        mpp_x = 0.25
-        mpp_y = 0.25
-
-    '''
     mpp_x = 0.25
     mpp_y = 0.25
     WSI_meta = (mpp_x + mpp_y) / 2
 
-    #WSI_meta = (float(WSI_file.properties[TiffSlide.PROPERTY_NAME_MPP_X])+float(WSI_file.properties[TiffSlide.PROPERTY_NAME_MPP_Y]))/2
-
     dist_mpp, area_mpp2 = WSI_meta, WSI_meta**2
     WSI_cols,WSI_rows = WSI_file.dimensions[0],WSI_file.dimensions[1]
 
-    #if ftype == '.ndpi':
-        #level = 2
-    #else:
-    level = 0 #changed form 1 to 0. Check levels later
+    level = 0
 
     if (len(levels) > 1):
         level = 1
@@ -162,9 +123,7 @@ for WSI in WSIs:
     df2 = np.sqrt(downsample_factor)
 
     #create output directory
-    #wsi_roi_dir = roi_dir + WSI_name
     wsi_roi_dir = roi_dir
-    #wsi_pod_seg_dir = pod_seg_dir + WSI_name
     wsi_pod_seg_dir = pod_seg_dir
 
     if not os.path.isdir(wsi_roi_dir):
@@ -172,13 +131,11 @@ for WSI in WSIs:
         os.mkdir(wsi_pod_seg_dir)
 
     #get whole-slide glom mask
-    #WSI_glom_xml = cwd + '/glom_xmls/' + WSI_name + '.xml'
     WSI_glom_xml = args.glom_xml
     WSI_glom_mask = xml_to_mask(WSI_glom_xml, (0,0), (WSI_cols,WSI_rows), downsample_factor=downsample_factor, verbose=0)
     WSI_glom_mask = np.array(WSI_glom_mask)
 
     #get whole-slide mask
-    #WSI_downsample = np.array(WSI_file.read_region((0,0),level,(WSI_levels[0],WSI_levels[1])),dtype = 'uint8')
     WSI_downsample = np.asarray(WSI_file.read_region((0,0),level, levels[level]),dtype = 'uint8')
 
     WSI_downsample = get_wsi_mask(WSI_downsample[:,:,0:3],WSI_glom_mask)
@@ -210,19 +167,12 @@ for WSI in WSIs:
         x_start,y_start,x_stop,y_stop = int(df2*bb[0]),int(df2*bb[1]),int(df2*bb[2]),int(df2*bb[3])
         x_length = x_stop-x_start
         y_length = y_stop-y_start
-
         roi = np.array(WSI_file.read_region((y_start,x_start),0,(y_length,x_length)),dtype = 'uint8')
         roi = roi[:,:,0:3]
         rows,cols,dims = roi.shape
         roi_name = '/roi_' + str(bb_iter+1) + '.png'
         roi_path = wsi_roi_dir + roi_name
-        #roi_path = output_dir + roi_name
-        plt.imsave(roi_path,roi)
-
         glom_mask = WSI_glom_mask[bb[0]:bb[2],bb[1]:bb[3]]
-
-        #glom_mask_prev = glom_mask
-
         glom_mask_uint8 = (glom_mask * 255).astype(np.uint8)
         pil_image_glom = Image.fromarray(glom_mask_uint8)
         print(pil_image_glom.size, "before pil image")
@@ -230,12 +180,6 @@ for WSI in WSIs:
         glom_mask = pil_image_glom.resize((height, width), Image.Resampling.LANCZOS)
         glom_mask = np.array(glom_mask)
         glom_mask = glom_mask // 255
-        #glom_mask = (resize(glom_mask,[rows,cols],anti_aliasing=True)>0.01)*1
-
-        #glom_mask_after = glom_mask
-
-        #glom_mask = (resize(glom_mask,[rows,cols],anti_aliasing=True)>0.01)*1
-
         xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector
         indv_pod_feat_array = np.vstack([indv_pod_feat_array,indv_pod_feats])
@@ -278,7 +222,6 @@ for WSI in WSIs:
 
     gc.uploadFileToItem(slide_item_id, csv_path_glom, reference=None, mimeType=None, filename=None, progressCallback=None)
     gc.uploadFileToItem(slide_item_id, csv_path_pod, reference=None, mimeType=None, filename=None, progressCallback=None)
-    #gc.uploadFileToItem(slide_item_id, csv_path_glom, reference=None, mimeType=None, filename=None, progressCallback=None)
 
 
 print('\n')

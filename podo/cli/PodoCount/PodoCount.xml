@@ -6,7 +6,7 @@
   <version>0.1.0</version>
   <documentation-url>https://github.com/SarderLab/PodoCount</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Briana Santo (SUNY Buffalo)</contributor>
+  <contributor>Sumanth Devarasetty (University of Florida)</contributor>
   <acknowledgements>This work is part of efforts in digital pathology by the Sarder Lab: UFL.</acknowledgements>
   <parameters>
     <label>IO</label>

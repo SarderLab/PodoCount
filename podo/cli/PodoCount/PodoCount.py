@@ -2,10 +2,6 @@ import os
 import sys
 from ctk_cli import CLIArgumentParser
 
-
-sys.path.append("..")
-
-
 def main(args):  
     
     cmd = "python3 ../PodoCount_code/podocount_main_serv.py  --input_image '{}' --glom_xml '{}' --basedir '{}' --slider {}  --section_thickness {} --girderApiUrl {} --girderToken {} \
@@ -14,7 +10,6 @@ def main(args):
     print(cmd)
     sys.stdout.flush()
     os.system(cmd)  
-
 
 if __name__ == "__main__":
     main(CLIArgumentParser().parse_args())

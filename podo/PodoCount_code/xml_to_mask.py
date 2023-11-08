@@ -19,7 +19,6 @@ def get_num_classes(xml_path):
 
     return annotation_num + 1
 
-
 """
 location (tuple) - (x, y) tuple giving the top left pixel in the level 0 reference frame
 size (tuple) - (width, height) tuple giving the region size
