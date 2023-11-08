@@ -7,7 +7,6 @@ import numpy as np
 import skimage as sk
 import scipy as sp
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
 import sys 
 sys.path.append('..')

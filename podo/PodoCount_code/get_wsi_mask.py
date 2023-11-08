@@ -10,7 +10,6 @@ import cv2
 from skimage import color
 from skimage.transform import resize
 from PIL import Image
-import matplotlib.pyplot as plt
 from skimage.morphology import binary_dilation, disk
 
 def get_wsi_mask(image,wsi_glom_mask):

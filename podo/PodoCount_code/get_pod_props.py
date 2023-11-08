@@ -4,7 +4,6 @@ Created on Mon Nov 23 9:00:07 2020
 
 """
 import numpy as np
-import matplotlib.pyplot as plt
 import skimage as sk
 import scipy as sp
 import cv2
