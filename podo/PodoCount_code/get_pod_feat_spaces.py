@@ -4,7 +4,6 @@ Created on Mon Nov 23 9:00:07 2020
 
 """
 import numpy as np
-from skimage.morphology import binary_dilation, disk
 
 def get_pod_feat_spaces(total_gloms):
 

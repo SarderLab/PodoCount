@@ -7,7 +7,6 @@ import numpy as np
 import skimage as sk
 
 import scipy as sp
-import cv2
 
 ###GLOM FEATURE ENGINEERING AND EXTRACTION###
 def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):

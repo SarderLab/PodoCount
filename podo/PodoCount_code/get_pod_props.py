@@ -6,12 +6,8 @@ Created on Mon Nov 23 9:00:07 2020
 import numpy as np
 import skimage as sk
 import scipy as sp
-import cv2
-from skimage import segmentation
-from skimage.color import rgb2gray
 from stain_decon import stain_decon
 from get_boundary import get_boundary
-from skimage.morphology import binary_dilation, disk
 
 #Functions
 def thin_section_method(podocyte_count,pod_mask,areas,bbs,glom_area,T,area_mpp2,dist_mpp):

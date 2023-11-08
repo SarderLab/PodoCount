@@ -4,20 +4,14 @@ Created on Mon Nov 23 9:00:07 2020
 
 """
 import numpy as np
-import skimage as sk
-import scipy as sp
 import pandas as pd
 import os
 import sys 
 sys.path.append('..')
-import cv2
-#import openslide
-import glob
 import time
 import warnings
 import argparse
 from PIL import Image
-
 from PodoCount_code.xml_to_mask import xml_to_mask
 from PodoCount_code.get_wsi_mask import get_wsi_mask
 from PodoCount_code.get_boundary import get_boundary
@@ -25,12 +19,8 @@ from PodoCount_code.get_glom_props import get_glom_props
 from PodoCount_code.get_pod_feat_spaces import get_pod_feat_spaces
 from PodoCount_code.stain_decon import stain_decon
 from get_pod_props import get_pod_props
-
-from skimage import color, morphology
-from skimage.transform import resize
 from tiffslide import TiffSlide
 import girder_client
-
 
 #filter warnings
 warnings.filterwarnings("ignore")
@@ -42,22 +32,16 @@ parser.add_argument('--glom_xml')
 parser.add_argument('--basedir')
 parser.add_argument('--slider')
 parser.add_argument('--section_thickness')
-
 parser.add_argument('--girderApiUrl')
 parser.add_argument('--girderToken')
 
 args = parser.parse_args()
-
-
 gc = girder_client.GirderClient(apiUrl=args.girderApiUrl)
 gc.setToken(args.girderToken)
-
 
 #get current working directory
 cwd = os.getcwd()
 WSIs = [args.input_image]
-
-
 
 #WSI general info
 section_thickness = int(args.section_thickness)
@@ -88,7 +72,6 @@ num_sections = 1
 #Main Script
 for WSI in WSIs:
     start_time = time.time()
-
     WSI_name = WSI.split('/')
     WSI_name = WSI[-1]
     WSI_name = WSI.split('.')

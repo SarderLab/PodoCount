@@ -6,11 +6,8 @@ Created on Mon Nov 23 9:00:07 2020
 import numpy as np
 import skimage as sk
 import scipy as sp
-import cv2
 from skimage import color
-from skimage.transform import resize
 from PIL import Image
-from skimage.morphology import binary_dilation, disk
 
 def get_wsi_mask(image,wsi_glom_mask):
     wsi_mask = color.rgb2gray(image)
