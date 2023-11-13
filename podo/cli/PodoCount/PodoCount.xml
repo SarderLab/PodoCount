@@ -11,40 +11,47 @@
   <parameters>
     <label>IO</label>
     <description>Input/Output Parameters</description>
+    <string>
+      <name>type</name>
+      <label>Analysis Type</label>
+      <description>Enter the type of Analysis; "Human_Analysis" or "Mouse_Analysis"</description>
+      <default>Human_Analysis</default>
+      <index>0</index>
+    </string>
     <image>
       <name>input_image</name>
       <label>Input Image</label>
       <description>Input Filename</description>
       <channel>input</channel>
-      <index>0</index>
+      <index>1</index>
     </image>
     <file>
       <name>glom_xml</name>
       <label>Glom XML</label>
       <description>XML file for the input image</description>
       <channel>input</channel>
-      <index>1</index>
+      <index>2</index>
     </file>
     <directory>
       <name>basedir</name>
       <label>Base Directory</label>
       <description>Parent folder or collection for the current image</description>
       <channel>input</channel>
-      <index>2</index>
+      <index>3</index>
     </directory>
     <double>
       <name>slider</name>
       <label>Slider</label>
       <description> A number (float) establishing the threshold on the dab stain; options include any number [0,3]</description>
       <channel>input</channel>
-      <index>3</index>
+      <index>4</index>
     </double>
     <integer>
       <name>section_thickness</name>
       <label>Section Thickness</label>
       <description> A number (integer) indicating the tissue section thickness [0,15]</description>
       <channel>input</channel>
-      <index>4</index>
+      <index>5</index>
     </integer>
   </parameters>
   <parameters advanced="true">

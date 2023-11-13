@@ -19,6 +19,8 @@ from PodoCount_code.get_glom_props import get_glom_props
 from PodoCount_code.get_pod_feat_spaces import get_pod_feat_spaces
 from PodoCount_code.stain_decon import stain_decon
 from get_pod_props import get_pod_props
+from get_pod_props_mouse import get_pod_props_mouse
+
 from tiffslide import TiffSlide
 import girder_client
 
@@ -26,7 +28,7 @@ import girder_client
 warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
-
+parser.add_argument('--type')
 parser.add_argument('--input_image')
 parser.add_argument('--glom_xml')
 parser.add_argument('--basedir')
@@ -68,6 +70,7 @@ if not os.path.isdir(output_dir):
 #Parameters
 slider = np.float64(args.slider)
 num_sections = 1
+
 
 #Main Script
 for WSI in WSIs:
@@ -162,7 +165,12 @@ for WSI in WSIs:
         glom_mask = pil_image_glom.resize((height, width), Image.Resampling.LANCZOS)
         glom_mask = np.array(glom_mask)
         glom_mask = glom_mask // 255
-        xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
+
+        if args.type == 'Human_Analysis':
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
+        elif args.type == 'Mouse_Analysis':
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
+            
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector
         indv_pod_feat_array = np.vstack([indv_pod_feat_array,indv_pod_feats])
 
