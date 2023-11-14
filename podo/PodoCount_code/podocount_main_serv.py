@@ -22,6 +22,11 @@ from get_pod_props import get_pod_props
 from get_pod_props_mouse import get_pod_props_mouse
 from tiffslide import TiffSlide
 import girder_client
+from enum import Enum
+
+class InputType(Enum):
+    Mouse_Analysis = 'Mouse'
+    Human_Analysis = 'Human'
 
 #filter warnings
 warnings.filterwarnings("ignore")
@@ -161,9 +166,9 @@ for WSI in WSIs:
         glom_mask = np.array(glom_mask)
         glom_mask = glom_mask // 255
 
-        if args.type == 'Human':
+        if args.type == InputType.Human_Analysis.value:
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
-        elif args.type == 'Mouse':
+        elif args.type == InputType.Mouse_Analysis.value:
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
             
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector
