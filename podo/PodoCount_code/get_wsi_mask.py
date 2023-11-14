@@ -12,18 +12,13 @@ from PIL import Image
 def get_wsi_mask(image,wsi_glom_mask):
     wsi_mask = color.rgb2gray(image)
     wsi_mask = wsi_mask<(wsi_mask.mean())
-    wsi_mask_before = wsi_mask
     wsi_mask = sp.ndimage.morphology.binary_fill_holes(wsi_mask)
-    wsi_mask_after = wsi_mask
     wsi_mask_uint8 = (wsi_mask * 255).astype(np.uint8)
     pil_image = Image.fromarray(wsi_mask_uint8)
-    print(pil_image.size, "before")
     width, height = wsi_glom_mask.shape
     wsi_mask = pil_image.resize((height, width), Image.Resampling.LANCZOS)
     wsi_mask = np.array(wsi_mask)
     wsi_mask = wsi_mask // 255
-    print(wsi_mask.shape, 'after')
-    print(wsi_glom_mask.shape)
     wsi_mask = np.logical_and(wsi_mask,(1-wsi_glom_mask))
     wsi_labels, num_labels = sp.ndimage.label(wsi_mask)
     wsi_props = sk.measure.regionprops(wsi_labels)
@@ -38,6 +33,4 @@ def get_wsi_mask(image,wsi_glom_mask):
         label = keep[val,0] + 1
         wsi_mask[wsi_labels==label] = 1
     wsi_mask = sp.ndimage.morphology.binary_fill_holes(wsi_mask)
-    
- 
     return(wsi_mask)

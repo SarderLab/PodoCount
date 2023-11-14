@@ -20,7 +20,6 @@ from PodoCount_code.get_pod_feat_spaces import get_pod_feat_spaces
 from PodoCount_code.stain_decon import stain_decon
 from get_pod_props import get_pod_props
 from get_pod_props_mouse import get_pod_props_mouse
-
 from tiffslide import TiffSlide
 import girder_client
 
@@ -84,7 +83,6 @@ for WSI in WSIs:
 
     WSI_file = TiffSlide(WSI)
     levels = WSI_file.level_dimensions
-    print(levels, "levels")
 
     mpp_x = 0.25
     mpp_y = 0.25
@@ -101,8 +99,6 @@ for WSI in WSIs:
         level = 0
 
     WSI_levels = WSI_file.level_dimensions[level]
-
-    print(WSI_levels, "WSI_Levels")
 
     downsample_factor=16
     df2 = np.sqrt(downsample_factor)
@@ -160,15 +156,14 @@ for WSI in WSIs:
         glom_mask = WSI_glom_mask[bb[0]:bb[2],bb[1]:bb[3]]
         glom_mask_uint8 = (glom_mask * 255).astype(np.uint8)
         pil_image_glom = Image.fromarray(glom_mask_uint8)
-        print(pil_image_glom.size, "before pil image")
         width, height = glom_mask.shape
         glom_mask = pil_image_glom.resize((height, width), Image.Resampling.LANCZOS)
         glom_mask = np.array(glom_mask)
         glom_mask = glom_mask // 255
 
-        if args.type == 'Human_Analysis':
+        if args.type == 'Human':
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
-        elif args.type == 'Mouse_Analysis':
+        elif args.type == 'Mouse':
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir)
             
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector

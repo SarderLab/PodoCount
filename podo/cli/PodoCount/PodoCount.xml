@@ -11,13 +11,15 @@
   <parameters>
     <label>IO</label>
     <description>Input/Output Parameters</description>
-    <string>
+    <string-enumeration>
       <name>type</name>
       <label>Analysis Type</label>
-      <description>Enter the type of Analysis; "Human_Analysis" or "Mouse_Analysis"</description>
-      <default>Human_Analysis</default>
+      <description>Type of Analysis: "Human Analysis" or "Mouse Analysis"</description>
+      <default>Human</default>
+      <element>Human</element>
+      <element>Mouse</element>
       <index>0</index>
-    </string>
+    </string-enumeration>
     <image>
       <name>input_image</name>
       <label>Input Image</label>
