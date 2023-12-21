@@ -27,6 +27,8 @@ import shutil
 import json
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+from PodoCount_code.mask_to_xml import xml_create, xml_add_annotation, xml_add_region, xml_save
+from PodoCount_code.xml_to_mask_conversion import write_minmax_to_xml
 
 class InputType(Enum):
     Mouse_Analysis = 'Mouse'
@@ -38,7 +40,7 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
 parser.add_argument('--type')
 parser.add_argument('--input_image')
-parser.add_argument('--glom_xml')
+#parser.add_argument('--glom_xml')
 parser.add_argument('--basedir')
 parser.add_argument('--slider')
 parser.add_argument('--section_thickness')
@@ -67,7 +69,96 @@ WSIs = [args.input_image]
 
 #WSI general info
 section_thickness = int(args.section_thickness)
-glom_xmls = [args.glom_xml]
+
+NAMES = ['gloms']
+base_dir_id = folder.split('/')[-2]
+_ = os.system("printf '\nUsing data from girder_client Folder: {}\n'".format(folder))
+gc = girder_client.GirderClient(apiUrl=args.girderApiUrl)
+gc.setToken(args.girderToken)
+# get files in folder
+files2 = gc.listItem(base_dir_id)
+xml_color=[65280]*(len(NAMES)+1)
+cwd = os.getcwd()
+print(cwd)
+os.chdir(cwd)
+temp = folder
+slides_used = []
+ignore_label = len(NAMES)+1
+
+for file in files2:
+    if file['name'] == file_name:
+        slidename = file['name']
+        _ = os.system("printf '\n---\n\nFOUND: [{}]\n'".format(slidename))
+        skipSlide = 0
+
+        # get annotation
+        item = gc.getItem(file['_id'])
+        annot = gc.get('/annotation/item/{}'.format(item['_id']), parameters={'sort': 'updated'})
+        annot.reverse()
+        annot = list(annot)
+        _ = os.system("printf '\tfound [{}] annotation layers...\n'".format(len(annot)))
+
+        # create root for xml file
+        xmlAnnot = xml_create()
+
+        # all compartments
+        for class_,compart in enumerate(NAMES):
+
+            compart = compart.replace(' ','')
+            class_ +=1
+            # add layer to xml
+            xmlAnnot = xml_add_annotation(Annotations=xmlAnnot, xml_color=xml_color, annotationID=class_)
+
+            # test all annotation layers in order created
+            for iter,a in enumerate(annot):
+
+                try:
+                    # check for annotation layer by name
+                    a_name = a['annotation']['name'].replace(' ','')
+                except:
+                    a_name = None
+
+                if a_name == compart:
+                    # track all layers present
+                    skipSlide +=1
+
+                    pointsList = []
+
+                    # load json data
+                    _ = os.system("printf '\tloading annotation layer: [{}]\n'".format(compart))
+
+                    a_data = a['annotation']['elements']
+
+                    for data in a_data:
+                        pointList = []
+                        points = data['points']
+                        for point in points:
+                            pt_dict = {'X': round(point[0]), 'Y': round(point[1])}
+                            pointList.append(pt_dict)
+                        pointsList.append(pointList)
+
+                    # write annotations to xml
+                    for i in range(len(pointsList)):
+                        pointList = pointsList[i]
+                        xmlAnnot = xml_add_region(Annotations=xmlAnnot, pointList=pointList, annotationID=class_)
+                    break
+                
+        if skipSlide != len(NAMES):
+            _ = os.system("printf '\tThis slide is missing annotation layers\n'")
+            _ = os.system("printf '\tSKIPPING SLIDE...\n'")
+            del xmlAnnot
+            continue # correct layers not present
+
+        # include slide and fetch annotations
+        _ = os.system("printf '\tFETCHING SLIDE...\n'")
+        os.rename('{}/{}'.format(folder, slidename), '{}/{}'.format(temp, slidename))
+        slides_used.append(slidename)
+
+        xml_path = '{}/{}.xml'.format(temp, os.path.splitext(slidename)[0])
+        _ = os.system("printf '\tsaving a created xml annotation file: [{}]\n'".format(xml_path))
+        xml_save(Annotations=xmlAnnot, filename=xml_path)
+        write_minmax_to_xml(xml_path) # to avoid trying to write to the xml from multiple workers
+        del xmlAnnot
 
 #Creating output directories
 output_dir = args.basedir + '/tmp'
@@ -116,7 +207,8 @@ for WSI in WSIs:
     df2 = np.sqrt(downsample_factor)
 
     #get whole-slide glom mask
-    WSI_glom_xml = args.glom_xml
+    #WSI_glom_xml = args.glom_xml
+    WSI_glom_xml = xml_path
     WSI_glom_mask = xml_to_mask(WSI_glom_xml, (0,0), (WSI_cols,WSI_rows), downsample_factor=downsample_factor, verbose=0)
     WSI_glom_mask = np.array(WSI_glom_mask)
 
@@ -198,8 +290,6 @@ for WSI in WSIs:
 
     gc.uploadFileToItem(slide_item_id, csv_path_glom, reference=None, mimeType=None, filename=None, progressCallback=None)
     gc.uploadFileToItem(slide_item_id, csv_path_pod, reference=None, mimeType=None, filename=None, progressCallback=None)
-    #gc.uploadFileToItem(slide_item_id, xml_counter_path, reference=None, mimeType=None, filename=None, progressCallback=None)
-    #gc.uploadFileToItem(slide_item_id, xml_contour_path, reference=None, mimeType=None, filename=None, progressCallback=None)
 
 shutil.rmtree(output_dir)
 

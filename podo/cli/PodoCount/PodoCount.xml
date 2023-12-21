@@ -27,13 +27,6 @@
       <channel>input</channel>
       <index>1</index>
     </image>
-    <file>
-      <name>glom_xml</name>
-      <label>Glom XML</label>
-      <description>XML file for the input image</description>
-      <channel>input</channel>
-      <index>2</index>
-    </file>
     <directory>
       <name>basedir</name>
       <label>Base Directory</label>
