@@ -42,7 +42,7 @@ def get_stats(array):
     return stats
 
 
-def get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir):
+def get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness):
     #Parameters
     ihc_gauss_sd = 2
     dt_gauss_sd = 1
@@ -112,9 +112,6 @@ def get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_con
             bbs.append(gen_props[pod].bbox)
         thin_pod_count, thin_pod_density, thin_pod_tpa, thin_pod_gpc, thin_pod_mask = thin_section_method(podocyte_count,separated_podocytes,areas,bbs,glom_area,section_thickness,area_mpp2,dist_mpp)
 
-    #save mask
-    roi_name = '/podmask_' + str(gcount) + '.png'
-    roi_path = wsi_pod_seg_dir + roi_name
 
     if podocyte_count>0:
 

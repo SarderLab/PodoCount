@@ -55,6 +55,15 @@
       <channel>input</channel>
       <index>5</index>
     </integer>
+    <string-enumeration>
+      <name>num_sections</name>
+      <label>Number of Sections</label>
+      <description>Number of tissue sections per slide (for WSIs of murine whole kidney sections options are 1 or 2; for human biopsy data, set to 1)</description>
+      <default>1</default>
+      <element>1</element>
+      <element>2</element>
+      <index>6</index>
+    </string-enumeration>
   </parameters>
   <parameters advanced="true">
     <label>Girder API URL and Key</label>
