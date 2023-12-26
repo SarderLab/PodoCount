@@ -73,8 +73,7 @@ section_thickness = int(args.section_thickness)
 NAMES = ['gloms']
 base_dir_id = folder.split('/')[-2]
 _ = os.system("printf '\nUsing data from girder_client Folder: {}\n'".format(folder))
-gc = girder_client.GirderClient(apiUrl=args.girderApiUrl)
-gc.setToken(args.girderToken)
+
 # get files in folder
 files2 = gc.listItem(base_dir_id)
 xml_color=[65280]*(len(NAMES)+1)
