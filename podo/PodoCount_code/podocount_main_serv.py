@@ -299,8 +299,6 @@ for WSI in WSIs:
 
     gc.uploadFileToItem(slide_item_id, csv_path_glom, reference=None, mimeType=None, filename=None, progressCallback=None)
     gc.uploadFileToItem(slide_item_id, csv_path_pod, reference=None, mimeType=None, filename=None, progressCallback=None)
-    #gc.uploadFileToFolder(girder_folder_id, xml_counter_path, reference=None, mimeType=None, filename=None, progressCallback=None)
-    #gc.uploadFileToFolder(girder_folder_id, xml_contour_path, reference=None, mimeType=None, filename=None, progressCallback=None)
 
 
 shutil.rmtree(output_dir)
