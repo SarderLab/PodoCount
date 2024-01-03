@@ -16,13 +16,15 @@ def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
         pod_im = sk.morphology.binary_dilation(glom_image,footprint=se,out=None)
 
         sections_label, section_count= sp.ndimage.label(tissue_image)
+        print(section_count, 'here1')
+        print(np.max(sections_label),'here2')
         s1_gloms = np.logical_and(sections_label==1,glom_image)
         s2_gloms = np.logical_and(sections_label==2,glom_image)
 
         s1_glom_labels,s1_glom_count = sp.ndimage.label(s1_gloms)
         s2_glom_labels,s2_glom_count = sp.ndimage.label(s2_gloms)
         total_gloms = s1_glom_count + s2_glom_count
-
+        print(s1_glom_count, s2_glom_count,'here3')
         glom_feat_array = []
         s_label = []
         glomID = []
@@ -84,7 +86,7 @@ def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
 
         glom_label, glom_count = sp.ndimage.label(glom_image)
         total_gloms = glom_count
-
+        print(glom_count,'here4')
         glom_feat_array = []
         s_label = []
         glomID = []

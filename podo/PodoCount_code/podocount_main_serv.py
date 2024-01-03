@@ -29,6 +29,7 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from PodoCount_code.mask_to_xml import xml_create, xml_add_annotation, xml_add_region, xml_save
 from PodoCount_code.xml_to_mask_conversion import write_minmax_to_xml
+from PodoCount_code.xml_to_json import convert_xml_json
 
 class InputType(Enum):
     Mouse_Analysis = 'Mouse'
@@ -287,8 +288,20 @@ for WSI in WSIs:
     end_time = time.time() - start_time
     print("--- %s seconds for whole-slide analysis ---" % (end_time))
 
+    NAMES = ['podo']
+    tree = ET.parse(xml_contour_path)
+    root = tree.getroot()
+    annots = convert_xml_json(root, NAMES, colorList=["rgb(255, 0, 0)"])
+    for annot in annots:
+        _ = gc.post(path='annotation',parameters={'itemId':item_dict[file_name]}, data = json.dumps(annot))
+        print('uploating layers')
+    print('annotation uploaded...\n')
+
     gc.uploadFileToItem(slide_item_id, csv_path_glom, reference=None, mimeType=None, filename=None, progressCallback=None)
     gc.uploadFileToItem(slide_item_id, csv_path_pod, reference=None, mimeType=None, filename=None, progressCallback=None)
+    #gc.uploadFileToFolder(girder_folder_id, xml_counter_path, reference=None, mimeType=None, filename=None, progressCallback=None)
+    #gc.uploadFileToFolder(girder_folder_id, xml_contour_path, reference=None, mimeType=None, filename=None, progressCallback=None)
+
 
 shutil.rmtree(output_dir)
 
