@@ -41,15 +41,23 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
 parser.add_argument('--type')
 parser.add_argument('--input_image')
-#parser.add_argument('--glom_xml')
 parser.add_argument('--basedir')
 parser.add_argument('--slider')
 parser.add_argument('--section_thickness')
 parser.add_argument('--num_sections')
+
+parser.add_argument('--ihc_gauss_sd')
+parser.add_argument('--dt_gauss_sd')
+parser.add_argument('--emt_thresh')
+parser.add_argument('--max_major')
+parser.add_argument('--min_minor')
+parser.add_argument('--max_ecc')
+
 parser.add_argument('--girderApiUrl')
 parser.add_argument('--girderToken')
 
 args = parser.parse_args()
+
 gc = girder_client.GirderClient(apiUrl=args.girderApiUrl)
 gc.setToken(args.girderToken)
 
@@ -170,9 +178,18 @@ if os.path.isdir(output_dir):
 # Create the directory
 os.makedirs(output_dir)
 
+
 #Parameters
 slider = np.float64(args.slider)
 num_sections = int(args.num_sections)
+
+ihc_gauss_sd = np.float64(args.ihc_gauss_sd) 
+dt_gauss_sd = np.float64(args.dt_gauss_sd) 
+emt_thresh = np.float64(args.emt_thresh)
+
+max_major = int(args.max_major)
+min_minor = int(args.min_minor)
+max_ecc = np.float64(args.max_ecc)
 
 #Main Script
 for WSI in WSIs:
@@ -258,9 +275,9 @@ for WSI in WSIs:
         glom_mask = glom_mask // 255
 
         if args.type == InputType.Human_Analysis.value:
-            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness)
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd, emt_thresh, max_major, min_minor, max_ecc)
         elif args.type == InputType.Mouse_Analysis.value:
-            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness)
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd, emt_thresh)
             
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector
         indv_pod_feat_array = np.vstack([indv_pod_feat_array,indv_pod_feats])

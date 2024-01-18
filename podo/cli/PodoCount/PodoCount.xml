@@ -32,21 +32,21 @@
       <label>Base Directory</label>
       <description>Parent folder or collection for the current image</description>
       <channel>input</channel>
-      <index>3</index>
+      <index>2</index>
     </directory>
     <double>
       <name>slider</name>
       <label>Slider</label>
       <description> A number (float) establishing the threshold on the dab stain; options include any number [0,3]</description>
       <channel>input</channel>
-      <index>4</index>
+      <index>3</index>
     </double>
     <integer>
       <name>section_thickness</name>
       <label>Section Thickness</label>
       <description> A number (integer) indicating the tissue section thickness [0,15]</description>
       <channel>input</channel>
-      <index>5</index>
+      <index>4</index>
     </integer>
     <string-enumeration>
       <name>num_sections</name>
@@ -55,8 +55,56 @@
       <default>1</default>
       <element>1</element>
       <element>2</element>
-      <index>6</index>
+      <index>5</index>
     </string-enumeration>
+    <double>
+      <name>ihc_gauss_sd</name>
+      <label>IHC Guassian SD</label>
+      <description> Gaussian Standard Deviation for IHC processing [0.5, 5]</description>
+      <default>2.0</default>
+      <channel>input</channel>
+      <index>6</index>
+    </double>
+    <double>
+      <name>dt_gauss_sd</name>
+      <label>DT Guassian SD</label>
+      <description> Gaussian Standard Deviation for Distance Transform [0.5, 5]</description>
+      <default>1.0</default>
+      <channel>input</channel>
+      <index>7</index>
+    </double>
+    <double>
+      <name>emt_thresh</name>
+      <label>EMT Threshold</label>
+      <description> H-minima Transform Threshold [0.001, 0.05]</description>
+      <default>0.01</default>
+      <channel>input</channel>
+      <index>8</index>
+    </double>
+    <integer>
+      <name>max_major</name>
+      <label>Max Major Axis Length</label>
+      <description> Maximum allowed major axis length for podocytes [30,100]</description>
+      <default>60</default>
+      <channel>input</channel>
+      <index>9</index>
+    </integer>
+    <integer>
+      <name>min_minor</name>
+      <label>Min Minor Axis Length</label>
+      <description> Minimum allowed minor axis length for podocytes [5,30]</description>
+      <default>10</default>
+      <channel>input</channel>
+      <index>10</index>
+    </integer>
+    <double>
+      <name>max_ecc</name>
+      <label>Max Eccentricity</label>
+      <description> Maximum allowed eccentricity for podocytes [0.5,0.9]</description>
+      <default>0.7</default>
+      <channel>input</channel>
+      <index>11</index>
+    </double>
   </parameters>
   <parameters advanced="true">
     <label>Girder API URL and Key</label>
