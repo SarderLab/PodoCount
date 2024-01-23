@@ -9,10 +9,6 @@ def convert_xml_json(root, names, colorList=None, alpha=0.4):
                      "rgb(76, 216, 23)", "rgb(102, 51, 0)", "rgb(128, 128, 128)", "rgb(0, 153, 153)", "rgb(0, 0, 0)"]
         
     anns = root.findall('Annotation')
-    # print(len(anns))
-    # print(anns)
-    # print(len(names))
-    # print(names)
     assert len(anns) <= len(names)
 
     data = []
