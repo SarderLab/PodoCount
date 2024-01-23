@@ -204,8 +204,8 @@ for WSI in WSIs:
     WSI_file = TiffSlide(WSI)
     levels = WSI_file.level_dimensions
 
-    mpp_x = 0.25
-    mpp_y = 0.25
+    mpp_x = float(WSI_file.properties['tiffslide.mpp-x'])
+    mpp_y = float(WSI_file.properties['tiffslide.mpp-y'])
     WSI_meta = (mpp_x + mpp_y) / 2
 
     dist_mpp, area_mpp2 = WSI_meta, WSI_meta**2
