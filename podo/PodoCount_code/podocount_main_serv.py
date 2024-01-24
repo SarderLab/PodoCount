@@ -212,12 +212,12 @@ for WSI in WSIs:
     WSI_cols,WSI_rows = WSI_file.dimensions[0],WSI_file.dimensions[1]
 
     level = 0
-
+    
     if (len(levels) > 1):
         level = 1
     else:
         level = 0
-
+    
     WSI_levels = WSI_file.level_dimensions[level]
 
     downsample_factor=16
@@ -267,13 +267,35 @@ for WSI in WSIs:
         roi = roi[:,:,0:3]
         rows,cols,dims = roi.shape
         glom_mask = WSI_glom_mask[bb[0]:bb[2],bb[1]:bb[3]]
+
+        #glom_mask = (resize(glom_mask,[rows,cols],anti_aliasing=False)>0.01)*1
+        
+        # Convert the mask to uint8 format, scaling values to 0-255
+        glom_mask_uint8 = (glom_mask * 255).astype(np.uint8)
+
+        # Create a PIL image for resizing
+        pil_image_glom = Image.fromarray(glom_mask_uint8)
+
+        # Resizing the mask using PIL's resize method with LANCZOS resampling
+        resized_glom_mask = pil_image_glom.resize((cols, rows), Image.Resampling.LANCZOS)
+
+        # Convert back to numpy array
+        resized_glom_mask = np.array(resized_glom_mask)
+
+        # Apply a threshold to get back a binary mask
+        # The threshold is 0.01 * 255 to match the scale of the original mask
+        threshold = 0.01 * 255
+        glom_mask = (resized_glom_mask > threshold) * 1
+
+        '''
         glom_mask_uint8 = (glom_mask * 255).astype(np.uint8)
         pil_image_glom = Image.fromarray(glom_mask_uint8)
         width, height = glom_mask.shape
         glom_mask = pil_image_glom.resize((height, width), Image.Resampling.LANCZOS)
         glom_mask = np.array(glom_mask)
         glom_mask = glom_mask // 255
-
+        '''
+        
         if args.type == InputType.Human_Analysis.value:
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd, emt_thresh, max_major, min_minor, max_ecc)
         elif args.type == InputType.Mouse_Analysis.value:
