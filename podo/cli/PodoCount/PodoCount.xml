@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>HistomicsTK</category>
+  <title>PodoCount</title>
+  <description>PodoCount</description>
+  <version>0.1.0</version>
+  <documentation-url>https://github.com/SarderLab/PodoCount</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Sumanth Devarasetty (University of Florida)</contributor>
+  <acknowledgements>This work is part of efforts in digital pathology by the Sarder Lab: UFL.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/Output Parameters</description>
+    <string-enumeration>
+      <name>type</name>
+      <label>Analysis Type</label>
+      <description>Type of Analysis: "Human Analysis" or "Mouse Analysis"</description>
+      <default>Human</default>
+      <element>Human</element>
+      <element>Mouse</element>
+      <index>0</index>
+    </string-enumeration>
+    <image>
+      <name>input_image</name>
+      <label>Input Image</label>
+      <description>Input Filename</description>
+      <channel>input</channel>
+      <index>1</index>
+    </image>
+    <directory>
+      <name>basedir</name>
+      <label>Base Directory</label>
+      <description>Parent folder or collection for the current image</description>
+      <channel>input</channel>
+      <index>2</index>
+    </directory>
+    <double>
+      <name>slider</name>
+      <label>Slider</label>
+      <description> The Slider control fine-tunes the threshold level used in identifying nuclei within images. A typical setting of 1 on the Slider is effective for most images. Adjusting the Slider value above 1 increases the threshold, which might result in fewer podocytes being detected, as it emphasizes more prominent nuclei features. On the other hand, decreasing the Slider below 1 lowers the threshold, potentially leading to the detection of a greater number of features, but may include irrelevant elements or noise. Adjust accordingly in [0,3]</description>
+      <channel>input</channel>
+      <index>3</index>
+    </double>
+    <string-enumeration>
+      <name>num_sections</name>
+      <label>Number of Sections</label>
+      <description>Number of tissue sections per slide (for WSIs of murine whole kidney sections options are 1 or 2; for human biopsy data, set to 1)</description>
+      <default>1</default>
+      <element>1</element>
+      <element>2</element>
+      <index>4</index>
+    </string-enumeration>
+    <double>
+      <name>ihc_gauss_sd</name>
+      <label>IHC Guassian SD</label>
+      <description> Controls the standard deviation for the Gaussian filter applied in immunohistochemistry (IHC) image processing. This parameter affects the smoothness of the IHC image. A higher value results in greater smoothing, which can be useful for reducing noise and highlighting significant patterns. Conversely, a lower value preserves more detail and is beneficial for capturing fine structures. The default value set for this parameter is 2, try increasing/decreasing it in steps of 0.5 to check for a better segmentation</description>
+      <default>2.0</default>
+      <channel>input</channel>
+      <index>5</index>
+    </double>
+    <double>
+      <name>dt_gauss_sd</name>
+      <label>DT Guassian SD</label>
+      <description> The 'Distance Transform Gaussian Standard Deviation' (dt_gauss_sd) parameter determines the amount of smoothing applied to the distance transform map of nuclei images. A higher value of dt_gauss_sd increases the smoothing effect, which can help in reducing noise and highlighting the more significant, larger structures in the distance map. This is particularly beneficial for enhancing the visibility of prominent nuclei while minimizing the impact of smaller, potentially less relevant features. On the other hand, a lower dt_gauss_sd value preserves more details in the distance map, making it suitable for scenarios where smaller structures are missing. The default value set for this parameter is 1, try decreasing/increasing this parameter in steps of 0.25 to check for better segmentations.</description>
+      <default>1.0</default>
+      <channel>input</channel>
+      <index>6</index>
+    </double>
+    <double>
+      <name>emt_thresh</name>
+      <label>EMT Threshold</label>
+      <description> H-minima Transform Threshold [0.001, 0.05]</description>
+      <default>0.01</default>
+      <channel>input</channel>
+      <index>7</index>
+    </double>
+    <integer>
+      <name>max_major</name>
+      <label>Max Major Axis Length</label>
+      <description> Sets the upper limit for the major axis length of detected features. Useful for excluding abnormally large structures from the segmentation. Choose a value in [30,100]. The default is 60.</description>
+      <default>60</default>
+      <channel>input</channel>
+      <index>8</index>
+    </integer>
+    <integer>
+      <name>min_minor</name>
+      <label>Min Minor Axis Length</label>
+      <description> Defines the minimum length of the minor axis for features of interest. Helps in filtering out smaller, potentially irrelevant objects. Choose a value in [5,30]. Default value is 10.</description>
+      <default>10</default>
+      <channel>input</channel>
+      <index>9</index>
+    </integer>
+    <double>
+      <name>max_ecc</name>
+      <label>Max Eccentricity</label>
+      <description> Specifies the maximum allowed eccentricity (elongation) of detected features. A lower value limits the analysis to more circular objects, while a higher value includes more elongated shapes.Select a value in the range [0.5,0.9]. Default is 0.7.</description>
+      <default>0.7</default>
+      <channel>input</channel>
+      <index>10</index>
+    </double>
+  </parameters>
+  <parameters advanced="true">
+    <label>Girder API URL and Key</label>
+    <description>A Girder API URL and token for Girder client</description>
+    <string>
+      <name>girderApiUrl</name>
+      <longflag>api-url</longflag>
+      <label>Girder API URL</label>
+      <description>A Girder API URL (e.g., https://girder.example.com:443/api/v1)</description>
+      <default></default>
+    </string>
+    <string>
+      <name>girderToken</name>
+      <longflag>token</longflag>
+      <label>Girder API Token</label>
+      <description>A Girder token identifying a user session</description>
+      <default></default>
+    </string>
+  </parameters>
+</executable>
