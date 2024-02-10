@@ -48,10 +48,6 @@ parser.add_argument('--num_sections')
 
 parser.add_argument('--ihc_gauss_sd')
 parser.add_argument('--dt_gauss_sd')
-parser.add_argument('--emt_thresh')
-parser.add_argument('--max_major')
-parser.add_argument('--min_minor')
-parser.add_argument('--max_ecc')
 
 parser.add_argument('--girderApiUrl')
 parser.add_argument('--girderToken')
@@ -185,11 +181,7 @@ num_sections = int(args.num_sections)
 
 ihc_gauss_sd = np.float64(args.ihc_gauss_sd) 
 dt_gauss_sd = np.float64(args.dt_gauss_sd) 
-emt_thresh = np.float64(args.emt_thresh)
 
-max_major = int(args.max_major)
-min_minor = int(args.min_minor)
-max_ecc = np.float64(args.max_ecc)
 
 #Main Script
 for WSI in WSIs:
@@ -297,9 +289,9 @@ for WSI in WSIs:
         '''
         
         if args.type == InputType.Human_Analysis.value:
-            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd, emt_thresh, max_major, min_minor, max_ecc)
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd)
         elif args.type == InputType.Mouse_Analysis.value:
-            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd, emt_thresh)
+            xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd)
             
         glom_pod_feat_array[:,bb_iter] = glom_pod_feat_vector
         indv_pod_feat_array = np.vstack([indv_pod_feat_array,indv_pod_feats])

@@ -73,39 +73,6 @@
       <channel>input</channel>
       <index>7</index>
     </double>
-    <double>
-      <name>emt_thresh</name>
-      <label>EMT Threshold</label>
-      <description> This parameter controls the cutoff to eliminate structural noise. The default value of the parameter is 0.01</description>
-      <default>0.01</default>
-      <channel>input</channel>
-      <index>8</index>
-    </double>
-    <description>The following parameters are only used in the podocyte segmentation for human images</description>
-    <integer>
-      <name>max_major</name>
-      <label>Max Major Axis Length</label>
-      <description> Sets the upper limit for the major axis length of detected podocyte structures assuming the associated shapes resembles ellipse. Useful for excluding abnormally large structures from the segmentation. Choose a value in [30,100]. The default is 60</description>
-      <default>60</default>
-      <channel>input</channel>
-      <index>9</index>
-    </integer>
-    <integer>
-      <name>min_minor</name>
-      <label>Min Minor Axis Length</label>
-      <description> Defines the lower limit for the minor axis of detected podocyte structures. Useful for filtering out smaller, potentially irrelevant objects. Choose a value in [5,30]. Default value is 10</description>
-      <default>10</default>
-      <channel>input</channel>
-      <index>10</index>
-    </integer>
-    <double>
-      <name>max_ecc</name>
-      <label>Max Eccentricity</label>
-      <description> Specifies the maximum allowed eccentricity of the detected podocyte structures. A lower value limits the analysis to more circular objects, while a higher value includes more elongated shapes. Select a value in the range [0.5,0.9]. Default is 0.7</description>
-      <default>0.7</default>
-      <channel>input</channel>
-      <index>11</index>
-    </double>
   </parameters>
   <parameters advanced="true">
     <label>Girder API URL and Key</label>

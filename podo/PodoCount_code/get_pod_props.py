@@ -42,15 +42,15 @@ def get_stats(array):
     return stats
 
 
-def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, ihc_gauss_sd, dt_gauss_sd, emt_thresh, max_major, min_minor, max_ecc):
+def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, ihc_gauss_sd, dt_gauss_sd):
     #Parameters
     #ihc_gauss_sd = 2
     #dt_gauss_sd = 1
     min_area = 200
-    #max_major = 60
-    #min_minor = 10
-    #max_ecc = 0.7
-    #emt_thresh = 0.01
+    max_major = 60
+    min_minor = 10
+    max_ecc = 0.7
+    emt_thresh = 0.01
 
     ###PODOCYTE SEGMENTATION###
     res,pas,ihc = stain_decon(roi)
