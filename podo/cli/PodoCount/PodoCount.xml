@@ -37,7 +37,7 @@
     <double>
       <name>slider</name>
       <label>Slider</label>
-      <description> Slider control fine-tunes a threshold used to identify nuclei. Typically a setting of 1 for Slider is effective for murine images and 2.5 for Human images. Adjusting the Slider value above 1 results in fewer podocytes being detected. Decreasing the Slider below 1 results in detecting a larger number of podocytes, while also including noise. Cases where the Slider value of 1 detects structural noise, increase the Slider in steps of 0.5 to improve podocyte segmentation. Adjust Slider accordingly in [0,3]</description>
+      <description> Slider control fine-tunes a threshold used to identify nuclei. Typically a setting of 1 for Slider is effective for murine images and 2.5 for Human images. Adjusting the Slider value above 1 results in fewer podocytes being detected. Decreasing the Slider below 1 results in detecting a larger number of podocytes, while also including noise. Cases where the Slider value of 1 detects structural noise, increase the Slider in steps of 0.5 to improve podocyte segmentation. Adjust Slider accordingly in [0,4]</description>
       <channel>input</channel>
       <index>3</index>
     </double>
@@ -45,6 +45,7 @@
       <name>section_thickness</name>
       <label>Section Thickness</label>
       <description> Tissue section thickness in μm [0,15]</description>
+      <default>5.0</default>
       <channel>input</channel>
       <index>4</index>
     </integer>
