@@ -6,16 +6,16 @@ Created on Mon Nov 23 9:00:07 2020
 import numpy as np
 import skimage as sk
 import scipy as sp
-import cv2
 
 ###GLOM FEATURE ENGINEERING AND EXTRACTION###
 def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
     if num_sections >1:
 
         se = sk.morphology.disk(3)
-        pod_im = sk.morphology.binary_dilation(glom_image,selem=se,out=None)
+        pod_im = sk.morphology.binary_dilation(glom_image,footprint=se,out=None)
 
         sections_label, section_count= sp.ndimage.label(tissue_image)
+        
         s1_gloms = np.logical_and(sections_label==1,glom_image)
         s2_gloms = np.logical_and(sections_label==2,glom_image)
 
@@ -42,7 +42,6 @@ def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
 
         s1_gen_props = sk.measure.regionprops(s1_glom_labels)
         for glom in range(s1_glom_count):
-
             s_label.append(1)
             glomID.append(glom+1)
             areas.append((s1_gen_props[glom].area)*df2*area_mpp2)
@@ -80,11 +79,9 @@ def get_glom_props(glom_image,tissue_image,num_sections,dist_mpp,area_mpp2,df2):
     elif num_sections == 1:
 
         se = sk.morphology.disk(3)
-        pod_im = sk.morphology.binary_dilation(glom_image,selem=se,out=None)
-
+        pod_im = sk.morphology.binary_dilation(glom_image,footprint=se) #removed out=none
         glom_label, glom_count = sp.ndimage.label(glom_image)
         total_gloms = glom_count
-
         glom_feat_array = []
         s_label = []
         glomID = []

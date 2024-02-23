@@ -4,37 +4,29 @@ Created on Mon Nov 23 9:00:07 2020
 
 """
 import numpy as np
-import matplotlib.pyplot as plt
 import skimage as sk
 import scipy as sp
-import cv2
-from skimage import segmentation
-from skimage.color import rgb2gray
 from stain_decon import stain_decon
 from get_boundary import get_boundary
 
 #Functions
 def thin_section_method(podocyte_count,pod_mask,areas,bbs,glom_area,T,area_mpp2,dist_mpp):
-
     bbs = np.array(bbs).reshape([podocyte_count,4])
     x_start,y_start,x_stop,y_stop = bbs[:,0],bbs[:,1],bbs[:,2],bbs[:,3]
     x_lengths = dist_mpp*(x_stop-x_start)
     y_lengths = dist_mpp*(y_stop-y_start)
     d = np.mean(np.mean(np.hstack([x_lengths,y_lengths]),axis=0))
-
     k = 0.72
     D = (d-T+np.sqrt((d-T)**2+(4*k*d*T)))/(2*k)
     CF = 1/(D/T+1)
     thin_pod_count = podocyte_count*CF
     glom_vol = glom_area*T
     thin_pod_density = thin_pod_count/glom_vol
-
     areas.sort(reverse=False)
-    thin_area_thresh = areas[np.int(-1*thin_pod_count)]
+    thin_area_thresh = areas[int(-1*thin_pod_count)]
     thin_pod_mask = sk.morphology.remove_small_objects(pod_mask, min_size=thin_area_thresh, connectivity=8)
     thin_pod_tpa = np.sum(thin_pod_mask)*area_mpp2
     thin_pod_gpc = thin_pod_tpa/glom_area
-
     return thin_pod_count, thin_pod_density, thin_pod_tpa, thin_pod_gpc, thin_pod_mask
 
 def get_stats(array):
@@ -50,10 +42,10 @@ def get_stats(array):
     return stats
 
 
-def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, wsi_pod_seg_dir):
+def get_pod_props_mouse(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness, ihc_gauss_sd, dt_gauss_sd):
     #Parameters
-    ihc_gauss_sd = 2
-    dt_gauss_sd = 1
+    #ihc_gauss_sd = 2
+    #dt_gauss_sd = 1
     min_area = 120
     emt_thresh = 0.01
 
@@ -120,10 +112,6 @@ def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, 
             bbs.append(gen_props[pod].bbox)
         thin_pod_count, thin_pod_density, thin_pod_tpa, thin_pod_gpc, thin_pod_mask = thin_section_method(podocyte_count,separated_podocytes,areas,bbs,glom_area,section_thickness,area_mpp2,dist_mpp)
 
-    #save mask
-    roi_name = '/podmask_' + str(gcount) + '.png'
-    roi_path = wsi_pod_seg_dir + roi_name
-    plt.imsave(roi_path,separated_podocytes)
 
     if podocyte_count>0:
 
@@ -243,7 +231,7 @@ def get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, 
                 pod_im = np.zeros(separated_podocytes.shape)
                 pod_im[podocyte_label==(pod)] = 1
                 se = sk.morphology.disk(2)
-                pod_im = sk.morphology.binary_dilation(pod_im,selem=se,out=None)
+                pod_im = sk.morphology.binary_dilation(pod_im,footprint=se,out=None)
                 pod_boundary = get_boundary(pod_im)
 
                 L = []
