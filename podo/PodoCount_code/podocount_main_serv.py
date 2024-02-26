@@ -14,10 +14,8 @@ import argparse
 from PIL import Image
 from PodoCount_code.xml_to_mask import xml_to_mask
 from PodoCount_code.get_wsi_mask import get_wsi_mask
-from PodoCount_code.get_boundary import get_boundary
 from PodoCount_code.get_glom_props import get_glom_props
 from PodoCount_code.get_pod_feat_spaces import get_pod_feat_spaces
-from PodoCount_code.stain_decon import stain_decon
 from get_pod_props import get_pod_props
 from get_pod_props_mouse import get_pod_props_mouse
 from tiffslide import TiffSlide
@@ -26,7 +24,6 @@ from enum import Enum
 import shutil
 import json
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 from PodoCount_code.mask_to_xml import xml_create, xml_add_annotation, xml_add_region, xml_save
 from PodoCount_code.xml_to_mask_conversion import write_minmax_to_xml
 from PodoCount_code.xml_to_json import convert_xml_json
@@ -278,15 +275,6 @@ for WSI in WSIs:
         # The threshold is 0.01 * 255 to match the scale of the original mask
         threshold = 0.01 * 255
         glom_mask = (resized_glom_mask > threshold) * 1
-
-        '''
-        glom_mask_uint8 = (glom_mask * 255).astype(np.uint8)
-        pil_image_glom = Image.fromarray(glom_mask_uint8)
-        width, height = glom_mask.shape
-        glom_mask = pil_image_glom.resize((height, width), Image.Resampling.LANCZOS)
-        glom_mask = np.array(glom_mask)
-        glom_mask = glom_mask // 255
-        '''
         
         if args.type == InputType.Human_Analysis.value:
             xml_counter, xml_contour, gcount, pcount, glom_pod_feat_vector, indv_pod_feats = get_pod_props(roi,glom_mask,slider,x_start,y_start,xml_counter,xml_contour, gcount, pcount,dist_mpp,area_mpp2, section_thickness,ihc_gauss_sd, dt_gauss_sd)

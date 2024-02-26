@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 import lxml.etree as ET
 import cv2
 import time
